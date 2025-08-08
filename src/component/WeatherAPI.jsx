@@ -104,12 +104,15 @@ useEffect(() => {
         const selected = suggestions[highlightedIndex];
         setCity(selected.name);
         setSuggestions([]);
-        refetch(); // start search
+        refetch(); 
       } else {
-        refetch(); // Enter without selecting
+        refetch(); 
         setSuggestions([]);
       }
     }
+  }}
+  onBlur={() => {
+    setTimeout(() => setSuggestions([]), 100);
   }}
 
 className="pr-10  pl-4 py-2 border rounded-xl shadow w-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"/>
