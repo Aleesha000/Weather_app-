@@ -25,13 +25,13 @@ useEffect(() => {
         const cityName = locations[0].name;
         setCity(cityName);
       } else {
-        setCity("Karachi"); 
+        setCity(""); 
       }
 
       refetch(); 
     } catch (err) {
       console.error("Error getting city from location:", err);
-      setCity("Karachi"); 
+      setCity(""); 
       refetch();
     }
   };
@@ -43,7 +43,7 @@ useEffect(() => {
     },
     (error) => {
       console.warn("Location access denied:", error);
-      setCity("Karachi"); 
+      setCity(""); 
       refetch();
     }
   );
@@ -62,6 +62,7 @@ useEffect(() => {
   } catch (err) {
     console.error("Error fetching suggestions:", err);
   }
+  
 };
   return (
     <div
@@ -83,7 +84,7 @@ useEffect(() => {
   console.log("Typed value:", value);
   setCity(value);
 
-  if (value.length > 2) {
+  if (value.length > 0) {
     fetchSuggestions(value); 
   } else {
     setSuggestions([]);
@@ -128,7 +129,7 @@ className="pr-10  pl-4 py-2 border rounded-xl shadow w-full focus:outline-none f
           setSuggestions([]);
           refetch();
         }}
-        // className="px-4 py-2 hover:bg-blue-100 cursor-pointer"
+       
         className={`px-4 py-2 cursor-pointer hover:bg-blue-100 ${
       index === highlightedIndex ? "bg-blue-100" : ""}`}
       >
@@ -146,8 +147,20 @@ className="pr-10  pl-4 py-2 border rounded-xl shadow w-full focus:outline-none f
   </button>
 </div>
 
-      {isLoading && (<p className="text-center text-lg text-blue-800 font-semibold mt-4">Loading...</p>)}
-      {isError && (<p className="text-center text-red-700 font-semibold mt-4">Couldn't find the location. Please try again.</p>)}
+      
+      {isLoading && (<div className="fixed inset-0 flex items-center justify-center bg-transparent z-50">
+    <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent  border-l-blue-500 border-r-green-500 border-b-pink-500 rounded-full animate-spin"></div></div>)}
+
+      {/* {isError && (<p className="text-center text-red-700 font-semibold mt-4">Couldn't find the location. Please try again.</p>)} */}
+
+      {isError && (
+  <div className="mt-36 flex items-center justify-center">
+    <div className="bg-red-100 text-red-700 font-semibold px-6 py-4 rounded-2xl shadow-lg border border-red-300">
+      🚫 Couldn't find the location. Please try again.
+    </div>
+  </div>
+)}
+
 
       
       {data && (
@@ -163,16 +176,11 @@ className="pr-10  pl-4 py-2 border rounded-xl shadow w-full focus:outline-none f
               alt="weather"
               className="mx-auto"
             />
-            <p className="text-lg">
-              {data.forecast.forecastday[0].day.condition.text}
-            </p>
-            <p>
-              🌡️ Max Temp: {data.forecast.forecastday[0].day.maxtemp_c}°C
-            </p>
-            <p>
-              ❄️ Min Temp: {data.forecast.forecastday[0].day.mintemp_c}°C
-            </p>
+            <p className="text-lg">{data.forecast.forecastday[0].day.condition.text}</p>
+            <p>🌡️ Max Temp: {data.forecast.forecastday[0].day.maxtemp_c}°C</p>
+            <p>❄️ Min Temp: {data.forecast.forecastday[0].day.mintemp_c}°C</p>
             <p>💧 Humidity: {data.forecast.forecastday[0].day.avghumidity}%</p>
+            <p>🌧️ Chance of Rain: {data.forecast.forecastday[0].day.daily_chance_of_rain}%</p>
           </div>
 
           {/* Hourly Forecast */}
@@ -191,6 +199,7 @@ className="pr-10  pl-4 py-2 border rounded-xl shadow w-full focus:outline-none f
                   </p>
                   <img src={hour.condition.icon} alt="icon" className="mx-auto" />
                   <p className="text-sm">{hour.temp_c}°C</p>
+                  <p>🌧️{hour.chance_of_rain}%</p>
                   <p className="text-xs">{hour.condition.text}</p>
                 </div>
               ))}
@@ -214,6 +223,7 @@ className="pr-10  pl-4 py-2 border rounded-xl shadow w-full focus:outline-none f
                 <p>🌡️ Max: {day.day.maxtemp_c}°C</p>
                 <p>❄️ Min: {day.day.mintemp_c}°C</p>
                 <p>💧 Humidity: {day.day.avghumidity}%</p>
+                <p>🌧️ Chance of Rain: {day.day.daily_chance_of_rain}%</p>
               </div>
             ))}
           </div>
